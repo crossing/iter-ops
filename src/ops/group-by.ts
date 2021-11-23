@@ -1,17 +1,27 @@
 import {Piper} from '../types';
 
 /**
+ * TODO: Here's the big one...
+ *   grouping requires use of Map, and consuming all values before it can start
+ *   emitting new values. This is a waste of an iterable, and makes the whole
+ *   "group" operator a dubious proposal.
+ *
+ *   We do not want operators that require full iteration before they can start
+ *   emitting (apart from the necessary ones: toArray, last, takeLast)
+ */
+
+/**
  * Groups objects/values into arrays of those, based on the returned selector value.
  */
 export function groupBy<T>(keySelector: (value: T, index: number) => any): Piper<T, T[]>;
 
 /**
- * Groups objects by property name as the object-key.
+ * Groups objects by property name, to be used as the key.
  *
  * This is usually followed by a "reduce" operator, to produce a single object:
  * reduce((c, i) => ({...c, ...i}), {})
  */
-export function groupBy<T>(property: keyof T): Piper<T, { property: T[] }>;
+export function groupBy<T>(key: keyof T): Piper<T, { [key: string]: T[] }>;
 
 /**
  * Check out:
